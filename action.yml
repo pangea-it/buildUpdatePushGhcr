@@ -1,0 +1,107 @@
+name: 'Build, update and push to ghcr.io'
+description: 'Generic action to install node dependencies, build, test, update version and push to ghcr.io'
+inputs:
+  gh_token:
+    description: 'GitHub access token'
+    required: true
+    default: ${{ secrets.GITHUB_TOKEN }}
+  npm_registry:
+    description: 'NPM registry URL'
+    required: true
+    default: https://npm.pkg.github.com/
+  npm_registry_scope:
+    description: 'NPM registry scope'
+    required: true
+  docker_login_registry:
+    description: 'Docker login registry'
+    required: true
+    default: ghcr.io
+  docker_login_user:
+    description: 'Docker login username'
+    required: true
+    default: ${{ github.actor }}
+  ghcr_tag_owner:
+    description: 'ghcr.io org. name (owner)'
+    required: true
+    default: ${{ github.repository_owner }}    
+  docker_image_name:
+    description: 'Docker image name'
+    required: true
+    default: ${{ github.event.repository.name }}     
+
+outputs:
+      tagversion: ${{ steps.package-version.outputs.current-version }}
+      imagename: ${{ github.event.repository.name }}
+
+permissions:
+  contents: write
+  packages: write
+
+runs:
+  using: "composite"
+  steps:
+    - name: 🤝 checkout
+      uses: actions/checkout@v3
+      with:
+        token: ${{ inputs.gh_token }}
+         
+    - name: ⬇️ node setup  
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+        registry-url: ${{ inputs.npm_registry }}
+        scope: ${{ inputs.npm_registry_scope }}
+        token: ${{ inputs.gh_token }}
+       
+    - name: 📦 install dependencies
+      run: npm install
+      env:
+        NODE_AUTH_TOKEN: ${{ inputs.gh_token }}
+      
+    - name: 🔄 update version and push to GitHub
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        npm version patch -m "GH Actions: Version updated to %s [skip ci]"
+        git push
+    
+    - name: ✍️ get-npm-version
+      id: package-version
+      uses: martinbeentjes/npm-get-version-action@master
+    
+    - name: 🔨 build package
+      run: npm run build
+      
+    - name: 🔍 run tests
+      run: npm run test
+      
+    - name: 🚮 remove dev dependencies
+      run: npm prune --production
+      
+    - name: 🐳 set up Docker Buildx
+      id: buildx
+      uses: docker/setup-buildx-action@v2.0.0
+      
+    - name: 🔑 login to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ inputs.docker_login_user }}
+        password: ${{ inputs.gh_token }}
+        
+    - name: ⛴ build and push docker image
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        push: true
+        tags: ghcr.io/${{inputs.ghcr_tag_owner}}/${{inputs.docker_image_name}}:${{steps.package-version.outputs.current-version}}
+        
+    - name: 🚮 delete old images
+      uses: snok/container-retention-policy@v1
+      with:
+        image-names: ${{inputs.docker_image_name}}
+        cut-off: 1 week ago IDT
+        account-type: org
+        org-name: ${{inputs.ghcr_tag_owner}}
+        keep-at-least: 10
+        token: ${{ inputs.gh_token }}
