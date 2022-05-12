@@ -5,6 +5,9 @@ inputs:
     description: 'GitHub access token'
     required: true
     default: ${{ secrets.GITHUB_TOKEN }}
+  snyk_token:
+    description: 'Snyk token'
+    required: true
   npm_registry:
     description: 'NPM registry URL'
     required: true
@@ -44,6 +47,11 @@ runs:
       uses: actions/checkout@v3
       with:
         token: ${{ inputs.gh_token }}
+
+    - name: Snyk vulnerabilies check
+      uses: snyk/actions/node@master
+      env:
+        SNYK_TOKEN: ${{ inputs.snyk_token } 
          
     - name: ⬇️ node setup  
       uses: actions/setup-node@v3
