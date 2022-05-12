@@ -56,6 +56,6 @@ Name                  | Description
 tagversion            | Updated version number/docker tag number                
 imagename             | Repository name
 
-## Required Permissions ##
-contents: write
-packages: write
+## Permissions ##
+- contents: write
+- packages: write
