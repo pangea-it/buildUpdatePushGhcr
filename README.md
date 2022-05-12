@@ -18,14 +18,33 @@ This composite action assumes the following:
     8. Remove dev dependencies
     9. Build and push docker image to ghcr.io, tagged by the version number
     10. Delete old docker images from ghcr.io
+
+## Usage ##
+```yaml
+name: Build and push docker image
+on:
+  push:
+    branches:
+      - 'main' 
+jobs:
+  buildAndPushDocker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build and push docker image
+        uses: pangea-it/buildUpdatePushGhcr@main
+        env:
+          gh_token: ${{ secrets.PAT }}
+          snyk_token: ${{ secrets.SNYK_TOKEN }}
+          npm_registry_scope: @example-org
+```
     
 ## Parameters ##
 Name                  | Required                                      
 -------------         | -------------                                
-gh_token              | Yes. Defaults to GITHUB_TOKEN                
+gh_token              | Yes. Defaults to GITHUB_TOKEN. Used for the NPM registry as well.             
 snyk_token            | Yes                                          
 npm_registry          | Yes. Defaults to https://npm.pkg.github.com/ 
-npm_registry_scope    | Yes                                          
+npm_registry_scope    | Yes. Example: '@example-org'                                         
 docker_login_registry | Yes. Defaults to ghcr.io                     
 docker_login_user     | Yes. Defaults to github.actor                
 ghcr_tag_owner        | Yes. Defaults to github.repository_owner     
