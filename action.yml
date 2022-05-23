@@ -7,7 +7,11 @@ inputs:
     default: ${{ secrets.GITHUB_TOKEN }}
   snyk_token:
     description: 'Snyk token'
+    required: false
+  use_snyk:
+    description: 'Using Snyk or not'
     required: true
+    default: true
   npm_registry:
     description: 'NPM registry URL'
     required: true
@@ -48,8 +52,9 @@ runs:
       with:
         token: ${{ inputs.gh_token }}
 
-    - name: Snyk vulnerabilies check
+    - name: 🐶 Snyk vulnerabilies check
       uses: snyk/actions/node@master
+      if: ${{ inputs.use_snyk == true }}
       env:
         SNYK_TOKEN: ${{ inputs.snyk_token } 
          
@@ -66,10 +71,15 @@ runs:
       env:
         NODE_AUTH_TOKEN: ${{ inputs.gh_token }}
       
+    # This step attempts to add package-lock.json, in case it got changed
+    # due to the installed dependencies. If nothing changed, it won't commit it.
+    # Otherwise version bump push might end up with "working tree not clean" error.
     - name: 🔄 update version and push to GitHub
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add package-lock.json
+        git diff-index --cached --quiet HEAD || git commit -m 'updating package-lock [skip ci]' 
         npm version patch -m "GH Actions: Version updated to %s [skip ci]"
         git push
     
@@ -77,7 +87,7 @@ runs:
       id: package-version
       uses: martinbeentjes/npm-get-version-action@master
     
-    - name: 🔨 build package
+    - name: 🔨 build application
       run: npm run build
       
     - name: 🔍 run tests
