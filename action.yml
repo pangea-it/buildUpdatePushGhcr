@@ -37,8 +37,12 @@ inputs:
     default: ${{ github.event.repository.name }}     
 
 outputs:
-      tagversion: ${{ steps.package-version.outputs.current-version }}
-      imagename: ${{ github.event.repository.name }}
+  tagversion:
+    description: "updated version updated in package.json"
+    value: ${{ steps.package-version.outputs.current-version }}
+  imagename:
+    description: "repository name"
+    value: ${{ github.event.repository.name }}
 
 permissions:
   contents: write
