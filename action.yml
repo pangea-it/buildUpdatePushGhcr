@@ -51,11 +51,6 @@ permissions:
 runs:
   using: "composite"
   steps:
-    - name: 🤝 checkout
-      uses: actions/checkout@v3
-      with:
-        token: ${{ inputs.token }}
-
     - name: 🐶 Snyk vulnerabilies check
       uses: snyk/actions/node@master
       if: ${{ inputs.use_snyk == true }}
