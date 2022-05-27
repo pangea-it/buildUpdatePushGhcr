@@ -51,6 +51,33 @@ permissions:
 runs:
   using: "composite"
   steps:
+    - name: 🤝 checkout
+      uses: actions/checkout@v3
+      with:
+        token: ${{ inputs.token }}
+  
+    - name: 🐶 Snyk vulnerabilies check
+      uses: snyk/actions/node@master
+      if: ${{ inputs.use_snyk == true }}
+      env:
+        SNYK_TOKEN: ${{ inputs.snyk_token }}
+         
+    - name: ⬇️ node setup  
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+        registry-url: ${{ inputs.npm_registry }}
+        scope: ${{ inputs.npm_registry_scope }}
+        token: ${{ inputs.token }}
+       
+    - name: 📦 install dependencies
+      run: |
+        cat /home/runner/work/_temp/.npmrc
+        npm install
+      shell: bash
+      env:
+        NODE_AUTH_TOKEN: ${{ inputs.token }}
+
     # This step attempts to add package-lock.json, in case it got changed
     # due to the installed dependencies. If nothing changed, it won't commit it.
     # Otherwise version bump push might end up with "working tree not clean" error.
