@@ -58,7 +58,7 @@ runs:
   
     - name: 🐶 Snyk vulnerabilies check
       uses: snyk/actions/node@master
-      if: ${{ inputs.use_snyk == true }}
+      if: inputs.use_snyk == true
       env:
         SNYK_TOKEN: ${{ inputs.snyk_token }}
          
@@ -72,7 +72,6 @@ runs:
        
     - name: 📦 install dependencies
       run: |
-        cat /home/runner/work/_temp/.npmrc
         npm install
       shell: bash
       env:
