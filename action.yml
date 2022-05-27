@@ -71,7 +71,9 @@ runs:
         token: ${{ inputs.token }}
        
     - name: 📦 install dependencies
-      run: npm install
+      run: |
+        cat /home/runner/work/_temp/.npmrc
+        npm install
       shell: bash
       env:
         NODE_AUTH_TOKEN: ${{ inputs.token }}
