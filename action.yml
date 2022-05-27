@@ -59,7 +59,7 @@ runs:
   
     - name: 🐶 Snyk vulnerabilies check
       uses: snyk/actions/node@master
-      if: ${{ inputs.use_snyk }}
+      if: ${{ inputs.use_snyk == 'true' }}
       env:
         SNYK_TOKEN: ${{ inputs.snyk_token }}
          
