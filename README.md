@@ -66,7 +66,7 @@ gh_token              | Yes. Defaults to `GITHUB_TOKEN`. Used for the NPM regist
 use_snyk              | Yes. Defaults to `true`. Set to `false` to ignore Snyk.
 snyk_token            | No. Required only if `use_snyk` is set to `true`.                                          
 npm_registry          | Yes. Defaults to `https://npm.pkg.github.com/` 
-npm_registry_scope    | Yes. Example: `@example-org`                                        
+npm_registry_scope    | Yes. Example: `'@example-org'`                                        
 docker_login_registry | Yes. Defaults to `ghcr.io`                     
 docker_login_user     | Yes. Defaults to `github.actor`                
 ghcr_tag_owner        | Yes. Defaults to `github.repository_owner`     
