@@ -4,7 +4,6 @@ inputs:
   gh_token:
     description: 'GitHub access token'
     required: true
-    default: ${{ secrets.GITHUB_TOKEN }}
   snyk_token:
     description: 'Snyk token'
     required: false
