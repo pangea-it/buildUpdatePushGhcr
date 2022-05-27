@@ -35,7 +35,7 @@ jobs:
         env:
           gh_token: ${{ secrets.PAT }}
           snyk_token: ${{ secrets.SNYK_TOKEN }}
-          npm_registry_scope: @example-org
+          npm_registry_scope: '@example-org'
 ```
 
 Example without Snyk:
@@ -54,7 +54,7 @@ jobs:
         env:
           gh_token: ${{ secrets.PAT }}
           use_snyk: false
-          npm_registry_scope: @example-org
+          npm_registry_scope: '@example-org'
 ```
     
 ## Parameters ##
