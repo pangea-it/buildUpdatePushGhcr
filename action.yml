@@ -1,7 +1,7 @@
 name: 'Build, update and push to ghcr.io'
 description: 'Generic action to install node dependencies, build, test, update version and push to ghcr.io'
 inputs:
-  gh_token:
+  token:
     description: 'GitHub access token'
     required: true
     default: ${{ github.token }}
@@ -54,7 +54,7 @@ runs:
     - name: 🤝 checkout
       uses: actions/checkout@v3
       with:
-        token: ${{ inputs.gh_token }}
+        token: ${{ inputs.token }}
 
     - name: 🐶 Snyk vulnerabilies check
       uses: snyk/actions/node@master
@@ -68,13 +68,13 @@ runs:
         node-version: 16
         registry-url: ${{ inputs.npm_registry }}
         scope: ${{ inputs.npm_registry_scope }}
-        token: ${{ inputs.gh_token }}
+        token: ${{ inputs.token }}
        
     - name: 📦 install dependencies
       run: npm install
       shell: bash
       env:
-        NODE_AUTH_TOKEN: ${{ inputs.gh_token }}
+        NODE_AUTH_TOKEN: ${{ inputs.token }}
       
     # This step attempts to add package-lock.json, in case it got changed
     # due to the installed dependencies. If nothing changed, it won't commit it.
@@ -114,7 +114,7 @@ runs:
       with:
         registry: ghcr.io
         username: ${{ inputs.docker_login_user }}
-        password: ${{ inputs.gh_token }}
+        password: ${{ inputs.token }}
         
     - name: ⛴ build and push docker image
       uses: docker/build-push-action@v2
@@ -131,4 +131,4 @@ runs:
         account-type: org
         org-name: ${{inputs.ghcr_tag_owner}}
         keep-at-least: 10
-        token: ${{ inputs.gh_token }}
+        token: ${{ inputs.token }}
