@@ -75,6 +75,7 @@ runs:
       shell: bash
       env:
         NODE_AUTH_TOKEN: ${{ inputs.token }}
+        NPM_TOKEN: ${{ inputs.token }}
       
     # This step attempts to add package-lock.json, in case it got changed
     # due to the installed dependencies. If nothing changed, it won't commit it.
