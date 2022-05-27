@@ -10,7 +10,7 @@ inputs:
     required: false
   use_snyk:
     description: 'Using Snyk or not'
-    type: boolean
+    type: string
     required: true
     default: true
   npm_registry:
