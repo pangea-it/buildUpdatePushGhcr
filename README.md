@@ -32,7 +32,7 @@ jobs:
     steps:
       - name: Build and push docker image
         uses: pangea-it/buildUpdatePushGhcr@main
-        env:
+        with:
           token: ${{ secrets.PAT }}
           snyk_token: ${{ secrets.SNYK_TOKEN }}
           npm_registry_scope: '@example-org'
@@ -52,7 +52,7 @@ jobs:
     steps:
       - name: Build and push docker image
         uses: pangea-it/buildUpdatePushGhcr@main
-        env:
+        with:
           token: ${{ secrets.PAT }}
           use_snyk: false
           npm_registry_scope: '@example-org'
