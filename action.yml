@@ -10,6 +10,7 @@ inputs:
     required: false
   use_snyk:
     description: 'Using Snyk or not'
+    type: boolean
     required: true
     default: true
   npm_registry:
@@ -58,7 +59,7 @@ runs:
   
     - name: 🐶 Snyk vulnerabilies check
       uses: snyk/actions/node@master
-      if: inputs.use_snyk == true
+      if: ${{ inputs.use_snyk }}
       env:
         SNYK_TOKEN: ${{ inputs.snyk_token }}
          
