@@ -71,6 +71,7 @@ runs:
        
     - name: 📦 install dependencies
       run: npm install
+      shell: bash
       env:
         NODE_AUTH_TOKEN: ${{ inputs.gh_token }}
       
@@ -85,6 +86,7 @@ runs:
         git diff-index --cached --quiet HEAD || git commit -m 'updating package-lock [skip ci]' 
         npm version patch -m "GH Actions: Version updated to %s [skip ci]"
         git push
+      shell: bash
     
     - name: ✍️ get-npm-version
       id: package-version
@@ -92,12 +94,15 @@ runs:
     
     - name: 🔨 build application
       run: npm run build
+      shell: bash
       
     - name: 🔍 run tests
       run: npm run test
+      shell: bash
       
     - name: 🚮 remove dev dependencies
       run: npm prune --production
+      shell: bash
       
     - name: 🐳 set up Docker Buildx
       id: buildx
