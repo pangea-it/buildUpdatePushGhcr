@@ -59,7 +59,7 @@ runs:
       uses: snyk/actions/node@master
       if: ${{ inputs.use_snyk == true }}
       env:
-        SNYK_TOKEN: ${{ inputs.snyk_token } 
+        SNYK_TOKEN: ${{ inputs.snyk_token }}
          
     - name: ⬇️ node setup  
       uses: actions/setup-node@v3
