@@ -14,7 +14,7 @@ This composite action assumes the following:
     4. Install NPM dependencies from GitHub Packages and NPM
     5. Update the "patch" section of the version and push the update to GitHub
     6. Build the system
-    7. Run unit tests
+    7. Run unit tests (optional)
     8. Remove dev dependencies
     9. Build and push docker image to ghcr.io, tagged by the version number
     10. Delete old docker images from ghcr.io
@@ -29,8 +29,15 @@ on:
 jobs:
   buildAndPushDocker:
     runs-on: ubuntu-latest
+    outputs:
+      tagversion: ${{ steps.buildAndPush.outputs.tagversion }}
+      imagename: ${{ github.event.repository.name }}
+    permissions:
+      contents: write
+      packages: write
     steps:
       - name: Build and push docker image
+        id: buildAndPush
         uses: pangea-it/buildUpdatePushGhcr@main
         with:
           token: ${{ secrets.PAT }}
@@ -39,7 +46,7 @@ jobs:
           ghcr_tag_owner: example-org
 ```
 
-Example without Snyk:
+Example without Snyk/unit tests:
 ```yaml
 name: Build and push docker image
 on:
@@ -49,12 +56,20 @@ on:
 jobs:
   buildAndPushDocker:
     runs-on: ubuntu-latest
+    outputs:
+      tagversion: ${{ steps.buildAndPush.outputs.tagversion }}
+      imagename: ${{ github.event.repository.name }}
+    permissions:
+      contents: write
+      packages: write
     steps:
       - name: Build and push docker image
+        id: buildAndPush
         uses: pangea-it/buildUpdatePushGhcr@main
         with:
           token: ${{ secrets.PAT }}
           use_snyk: false
+          perform_tests: false
           npm_registry_scope: '@example-org'
           ghcr_tag_owner: example-org
 ```
@@ -62,8 +77,9 @@ jobs:
 ## Parameters ##
 Name                  | Required                                      
 -------------         | -------------                                
-gh_token              | Yes. Defaults to `GITHUB_TOKEN`. Used for the NPM registry as well.             
+token                 | Yes. Defaults to `GITHUB_TOKEN`. Used for the NPM registry as well.             
 use_snyk              | Yes. Defaults to `true`. Set to `false` to ignore Snyk.
+perform_tests         | Yes. Defaults to `true`. Set to `false` to ignore unit tests.
 snyk_token            | No. Required only if `use_snyk` is set to `true`.                                          
 npm_registry          | Yes. Defaults to `https://npm.pkg.github.com/` 
 npm_registry_scope    | Yes. Example: `'@example-org'`                                        
