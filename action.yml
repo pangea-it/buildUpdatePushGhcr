@@ -5,6 +5,9 @@ inputs:
     description: 'GitHub access token'
     required: true
     default: ${{ github.token }}
+  checkout_branch:
+    description: 'Branch to checkout'
+    required: false
   snyk_token:
     description: 'Snyk token'
     required: false
@@ -61,6 +64,7 @@ runs:
       uses: actions/checkout@v3
       with:
         token: ${{ inputs.token }}
+        ref: ${{ inputs.checkout_branch }}
   
     - name: 🐶 Snyk vulnerabilies check
       uses: snyk/actions/node@master
