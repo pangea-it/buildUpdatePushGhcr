@@ -77,7 +77,8 @@ jobs:
 ## Parameters ##
 Name                  | Required                                      
 -------------         | -------------                                
-token                 | Yes. Defaults to `GITHUB_TOKEN`. Used for the NPM registry as well.             
+token                 | Yes. Defaults to `GITHUB_TOKEN`. Used for the NPM registry as well. 
+checkout_branch       | No. Defaults to default branch. Enables specifying the branch to checkout.
 use_snyk              | Yes. Defaults to `true`. Set to `false` to ignore Snyk.
 perform_tests         | Yes. Defaults to `true`. Set to `false` to ignore unit tests.
 snyk_token            | No. Required only if `use_snyk` is set to `true`.                                          
